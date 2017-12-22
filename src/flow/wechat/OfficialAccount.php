@@ -15,7 +15,6 @@ namespace payment\flow\wechat ;
 
 class OfficialAccount extends Base {
 	
-	//默认mode为 wap_official,继承wechat配置
-	protected $mode = 'wap_official' ;
+	protected $mode = 'wechat_official' ;
 		
 }
