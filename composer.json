@@ -1,0 +1,20 @@
+{
+    "name": "yuhari/payment",
+    "description": "Some payments , so far, includes Wechat, Ali .",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "yuhari",
+            "email": "yuhari@126.com"
+        }
+    ],
+	"autoload" : {
+        "psr-4":{
+           "payment\\" : "src/"
+        }
+	},
+    "require": {
+    	"yuhari/config" : "1.*",
+		"anlutro/curl": "^1.4"
+    }
+}
