@@ -24,7 +24,7 @@ class Base {
 	//body处理后的内容
 	public $content ;
 	
-	protected $data_format = '' ; // default || xml || json
+	protected $data_format = '' ; // default || xml || json || query
 	
 	public function __construct(Response $response, \payment\request\Base $request) {
 		$this->response = $response ;

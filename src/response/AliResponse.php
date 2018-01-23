@@ -9,15 +9,15 @@
  */
 
 /**
- * wechat response
+ * ali response
  */
 namespace payment\response ;
 
-class WechatResponse extends Base {
+class AliResponse extends Base {
 	
-	protected $data_format = 'xml' ;
+	protected $data_format = 'json' ;
 	
-	public $check_response = true ;
+	protected $check_response = true ;
 	
 	//微信需要对结果进行签名验证
 	protected function after() {
@@ -27,7 +27,7 @@ class WechatResponse extends Base {
 			$key = $this->request->flow->getConfig('key') ;
 			$t['key'] = $key ;
 
-			$sign = \payment\util\Common::generateSign($t, !empty($t['sign_type']) ? $t['sign_type'] : 'MD5') ;
+			$sign = \payment\util\Common::generateSign($t, !empty($t['sign_type']) ? $t['sign_type'] : 'RSA2','sign,sign_type', '') ;
 			
 			if ($sign !== strtolower($t['sign'])) {
 				$this->check_response = false ;

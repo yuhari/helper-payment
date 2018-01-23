@@ -32,7 +32,9 @@ abstract class Base extends \payment\flow\Base {
 	}
 	
 	protected function execute($action, $arguments){
-		$this->order->notify_url = $this->getConfig($action . '_notify_url') ;
+		if ($notify_url = $this->getConfig($action . '_notify_url')) {
+			$this->order->notify_url =  $notify_url ;
+		}
 		
 		$this->order->sign = \payment\util\Common::generateSign(array_merge($this->order->toArray(),array('key' => $this->getConfig('key'))), isset($this->order->sign_type) ? $this->order->sign_type : 'MD5') ;
 

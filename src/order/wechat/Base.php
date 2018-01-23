@@ -28,10 +28,14 @@ class Base extends \payment\order\Base {
 		),
 	) ;
 	
-	public function __construct($params = array()) {
+	public function __construct($action='pay' ,$params = array()) {
 		parent::__construct($params) ;
 		
-		$this->trade_type = static::$trade_type ;
+		if ($action == 'pay') {
+			$this->trade_type = static::$trade_type ;
+		}else{
+			$this->check_constrains = false ;
+		}
 	}
 	
 }

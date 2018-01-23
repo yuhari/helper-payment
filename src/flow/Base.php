@@ -56,6 +56,7 @@ abstract class Base implements IBase {
 			if (!empty($mode)) {
 				$this->mode = $mode ;
 			}
+			
 		}else{
 			throw FileNotFoundException::factory($file) ;
 		}
@@ -80,6 +81,12 @@ abstract class Base implements IBase {
 			}
 			return $list ;
 		}else {
+			
+			if ($this->config === false) {
+				ConfigFactory::init($this->config_path, $this->mode) ;
+				$this->config = ConfigFactory::get($this->config_file .'.'. $this->account . '.*') ;
+			}
+			
 			$this->prepare() ;
 			
 			$this->action = $name ;
@@ -96,10 +103,6 @@ abstract class Base implements IBase {
 	 * @return void
 	 */
 	public function prepare() {
-		if ($this->config === false) {
-			ConfigFactory::init($this->config_path, $this->mode) ;
-			$this->config = ConfigFactory::get($this->config_file .'.'. $this->account . '.*') ;
-		}
 		
 		$this->order->prepare() ;
 		

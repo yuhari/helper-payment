@@ -19,7 +19,7 @@ use payment\exception\IllegalParamException ;
 
 abstract class Base {
 	
-	protected $flow ;
+	public $flow ;
 	
 	protected $options = array() ;
 	
@@ -48,12 +48,20 @@ abstract class Base {
 	protected function handle() {
 		$this->handler = new cURL() ;
 		
+		$url = $this->flow->getUrl() ;
+		
 		$data = $this->flow->getOrder()->toArray() ;
 		if ($this->data_format === 'xml') {
 			$data = \payment\util\DataFormat::array2xml($data) ;
 		}
+		
+		if ($this->method == 'get') {
+			$data = http_build_query($data) ;
+			$url .= '?' . $data ;
+			$data = '' ;
+		}
 
-		$this->handler_request = $this->handler->newRequest($this->method, $this->flow->getUrl(), $data, static::$encoding_table[$this->encoding]) ;
+		$this->handler_request = $this->handler->newRequest($this->method, $url , $data, static::$encoding_table[$this->encoding]) ;
 		
 		if (!empty($this->options['headers'])) {
 			$this->handler_request->setHeaders($this->options['headers']) ;

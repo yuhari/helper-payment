@@ -83,11 +83,22 @@ abstract class Base {
 		if ($constrains === null) {
 			$constrains = $this->getConstrains() ;
 		}
-				
+
 		//必须的参数检查
 		if (!empty($constrains['required'])){
 			foreach($constrains['required'] as $key) {
-				if (!isset($this->sets[$key])) {
+				if (is_array($key)) { //必有多个中的一个
+					$f = false ;
+					foreach($key as $each) {
+						if (isset($this->sets[$each])){
+							$f = true ;
+							break ;
+						}
+					}
+					if (!$f) {
+						return false ;
+					}
+				}elseif (!isset($this->sets[$key])) {
 					return false ;
 				}
 			}
@@ -154,5 +165,9 @@ abstract class Base {
 	 */
 	public function toArray() {
 		return $this->sets ;
+	}
+	
+	public function reset() {
+		$this->sets = array() ;
 	}
 }

@@ -26,21 +26,33 @@ class Common {
 		$t = $params ;
 		ksort($t) ;
 		$a = array() ;
-		array_walk($t , function($v, $k) use(&$a, $sign_word, $salt_word){
-			if ($v && $k != $sign_word && $k != $salt_word) {
+		
+		$sign_words = explode(',', $sign_word) ;
+		
+		array_walk($t , function($v, $k) use(&$a, $sign_words, $salt_word){
+			if ($v && !in_array($k ,$sign_words) && $k != $salt_word) {
 				$a[] = sprintf("%s=%s", $k , $v) ;
 			}
 		}) ;
-		
+				
 		$s = implode('&', $a) ;
-		if ($salt_word) {
-			$s .= sprintf("&%s=%s", $salt_word, $t[$salt_word]) ;
-		}
-
-		if ($sign_method == 'HMAC-SHA256') {
-			$s = hash_hmac('sha256', $s, $t[$salt_word]) ;
-		}elseif ($sign_method == 'MD5') {
-			$s = md5($s) ;
+		
+		if (in_array($sign_method, array('HMAC-SHA256', 'MD5'))) {
+			if ($salt_word) {
+				$s .= sprintf("&%s=%s", $salt_word, $t[$salt_word]) ;
+			}else{
+				$s .= $t['key'] ;
+			}
+			
+			if ($sign_method == 'HMAC-SHA256') {
+				$s = hash_hmac('sha256', $s, $t[$salt_word]) ;
+			}elseif ($sign_method == 'MD5') {
+				$s = md5($s) ;
+			}
+		}elseif (in_array($sign_method, array('RSA','RSA2'))){
+			$method = $sign_method == 'RSA' ? OPENSSL_ALGO_SHA1 : OPENSSL_ALGO_SHA256 ;
+			openssl_sign($s, $sign, $t[$salt_word] ,$method) ;
+			$s = $sign ;
 		}else{
 			throw UnknownException::factory("sign method $sign_method not support.") ;
 		}
